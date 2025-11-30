@@ -4,7 +4,8 @@ import 'package:chat_app/services/firebase_service.dart';
 import 'package:chat_app/services/get_it_service.dart';
 import 'package:chat_app/widgets/chat_bubble.dart';
 import 'package:chat_app/widgets/chat_text_field.dart';
-import 'package:chat_app/widgets/custom_appbar.dart';
+import 'package:chat_app/widgets/build_app_bar.dart';
+import 'package:chat_app/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 
 class Chatpg extends StatefulWidget {
@@ -22,16 +23,11 @@ class ChatpgState extends State<Chatpg> {
 
   @override
   Widget build(BuildContext context) {
-    final String userMail =
-        ModalRoute.of(context)!.settings.arguments as String;
+    final String userMail = getIt<FirebaseService>().currentUser!.email!;
 
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        backgroundColor: kPrimaryColor,
-        title: const ChatAppBarTitle(),
-      ),
+      appBar: buildAppBar(img: kLogo, title: kChat, w: 68),
+      drawer: const CustomDrawer(),
       body: Column(
         children: [
           Expanded(

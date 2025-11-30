@@ -1,6 +1,8 @@
 import 'package:chat_app/constants.dart';
 import 'package:chat_app/helper_functions/error_snack_bar.dart';
-import 'package:chat_app/screens/chatpg.dart';
+import 'package:chat_app/views/chatpg.dart';
+import 'package:chat_app/views/registepg.dart';
+import 'package:chat_app/services/firebase_service.dart';
 import 'package:chat_app/services/get_it_service.dart';
 import 'package:chat_app/widgets/login_button.dart';
 import 'package:chat_app/widgets/text_field.dart';
@@ -8,24 +10,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-import '../services/firebase_service.dart';
+class Loginpg extends StatefulWidget {
+  const Loginpg({super.key});
 
-class Registepg extends StatefulWidget {
-  const Registepg({super.key});
-
-  static String id = "registepg";
+  static String id = "loginPg";
 
   @override
-  State<Registepg> createState() => _RegistepgState();
+  State<Loginpg> createState() => _LoginpgState();
 }
 
-class _RegistepgState extends State<Registepg> {
+class _LoginpgState extends State<Loginpg> {
+  GlobalKey<FormState> formKey = GlobalKey();
+  AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
+
   late String mail, pass;
 
   bool isLoading = false;
-
-  GlobalKey<FormState> formKey = GlobalKey();
-  AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +66,7 @@ class _RegistepgState extends State<Registepg> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 8, vertical: 14),
                       child: Text(
-                        'Sign Up',
+                        'Log In',
                         style: TextStyle(
                           color: kSecondaryColor,
                           fontSize: 26,
@@ -76,18 +76,17 @@ class _RegistepgState extends State<Registepg> {
                   ],
                 ),
                 InputTextField(
-                  hint: 'E-mail',
-                  onChanged: (data) {
-                    mail = data;
-                  },
-                ),
+                    hint: 'E-mail',
+                    onChanged: (value) {
+                      mail = value;
+                    }),
                 const SizedBox(
                   height: 14,
                 ),
                 InputTextField(
                   hint: 'Password',
-                  onChanged: (data) {
-                    pass = data;
+                  onChanged: (value) {
+                    pass = value;
                   },
                   obsecure: true,
                 ),
@@ -95,8 +94,8 @@ class _RegistepgState extends State<Registepg> {
                   height: 30,
                 ),
                 LoginButton(
-                  hint: 'Sign Up',
-                  onTap: _registerUser,
+                  hint: 'Log In',
+                  onTap: signInUser,
                 ),
                 const SizedBox(
                   height: 10,
@@ -105,7 +104,7 @@ class _RegistepgState extends State<Registepg> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      'already have an account?',
+                      'first time ?',
                       style: TextStyle(
                         color: kSecondaryColor,
                         fontSize: 18,
@@ -113,10 +112,10 @@ class _RegistepgState extends State<Registepg> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pop(context);
+                        Navigator.pushNamed(context, Registepg.id);
                       },
                       child: const Text(
-                        ' Log In',
+                        ' Sign Up',
                         style: TextStyle(
                           color: kSecondaryColor,
                           fontSize: 20,
@@ -133,8 +132,7 @@ class _RegistepgState extends State<Registepg> {
     );
   }
 
-  Future<void> _registerUser() async {
-    // if it didn't pass validation
+  Future<void> signInUser() async {
     if (!formKey.currentState!.validate()) {
       setState(() => autoValidateMode = AutovalidateMode.always);
       return;
@@ -144,18 +142,14 @@ class _RegistepgState extends State<Registepg> {
     setState(() => isLoading = true);
 
     try {
-      await getIt<FirebaseService>().register(mail, pass);
+      await getIt<FirebaseService>().signIn(mail, pass);
 
       if (mounted) {
         setState(() => isLoading = false);
       }
 
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        Chatpg.id,
-        (route) => false,
-        arguments: mail,
-      );
+      Navigator.pushNamedAndRemoveUntil(context, Chatpg.id, (route) => false,
+          arguments: mail);
     } on FirebaseAuthException catch (e) {
       if (mounted) {
         setState(() => isLoading = false);

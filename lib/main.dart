@@ -1,7 +1,8 @@
 import 'package:chat_app/constants.dart';
-import 'package:chat_app/screens/chatpg.dart';
-import 'package:chat_app/screens/loginpg.dart';
-import 'package:chat_app/screens/registepg.dart';
+import 'package:chat_app/views/calculator_pg.dart';
+import 'package:chat_app/views/chatpg.dart';
+import 'package:chat_app/views/loginpg.dart';
+import 'package:chat_app/views/registepg.dart';
 import 'package:chat_app/services/get_it_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         Loginpg.id: (context) => const Loginpg(),
         Registepg.id: (context) => const Registepg(),
         Chatpg.id: (context) => const Chatpg(),
+        CalculatorPg.id: (context) => const CalculatorPg(),
       },
       initialRoute: Loginpg.id,
     );

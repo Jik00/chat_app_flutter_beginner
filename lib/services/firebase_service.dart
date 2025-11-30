@@ -9,6 +9,8 @@ class FirebaseService {
 
   FirebaseService(this._auth, this._firestore);
 
+  User? get currentUser => _auth.currentUser;
+
   // -------- Authentication -----------------------------
   Future<UserCredential> signIn(String email, String password) async {
     try {
@@ -59,12 +61,5 @@ class FirebaseService {
         .map((snapshot) => snapshot.docs
             .map((doc) => MessageModel.fromJson(doc))
             .toList());
-  }
-
-  // Add user state management
-  Stream<User?> get authStateChanges => _auth.authStateChanges();
-  
-  Future<void> signOut() async {
-    await _auth.signOut();
   }
 }

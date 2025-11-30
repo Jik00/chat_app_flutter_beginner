@@ -5,7 +5,11 @@ const kSecondaryColor = Colors.white;
 const kThirdColor = Colors.blue;
 
 const kLogo = 'assets/images/logo.png';
+const kCalculatorImage = 'assets/images/calculator.png';
 const kMessagesCollection = 'messages';
 const kMessageData = 'data';
 const kMessageTime = 'time';
 const kMessageId = 'id';
+const kChat = 'Chat';
+const kCalculator = 'Calculator';
+const kAspects = 'Aspects';

@@ -1,8 +1,6 @@
 import 'package:chat_app/constants.dart';
 import 'package:chat_app/helper_functions/error_snack_bar.dart';
-import 'package:chat_app/screens/chatpg.dart';
-import 'package:chat_app/screens/registepg.dart';
-import 'package:chat_app/services/firebase_service.dart';
+import 'package:chat_app/views/chatpg.dart';
 import 'package:chat_app/services/get_it_service.dart';
 import 'package:chat_app/widgets/login_button.dart';
 import 'package:chat_app/widgets/text_field.dart';
@@ -10,22 +8,24 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-class Loginpg extends StatefulWidget {
-  const Loginpg({super.key});
+import '../services/firebase_service.dart';
 
-  static String id = "loginPg";
+class Registepg extends StatefulWidget {
+  const Registepg({super.key});
+
+  static String id = "registepg";
 
   @override
-  State<Loginpg> createState() => _LoginpgState();
+  State<Registepg> createState() => _RegistepgState();
 }
 
-class _LoginpgState extends State<Loginpg> {
-  GlobalKey<FormState> formKey = GlobalKey();
-  AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
-
+class _RegistepgState extends State<Registepg> {
   late String mail, pass;
 
   bool isLoading = false;
+
+  GlobalKey<FormState> formKey = GlobalKey();
+  AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +66,7 @@ class _LoginpgState extends State<Loginpg> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 8, vertical: 14),
                       child: Text(
-                        'Log In',
+                        'Sign Up',
                         style: TextStyle(
                           color: kSecondaryColor,
                           fontSize: 26,
@@ -76,17 +76,18 @@ class _LoginpgState extends State<Loginpg> {
                   ],
                 ),
                 InputTextField(
-                    hint: 'E-mail',
-                    onChanged: (value) {
-                      mail = value;
-                    }),
+                  hint: 'E-mail',
+                  onChanged: (data) {
+                    mail = data;
+                  },
+                ),
                 const SizedBox(
                   height: 14,
                 ),
                 InputTextField(
                   hint: 'Password',
-                  onChanged: (value) {
-                    pass = value;
+                  onChanged: (data) {
+                    pass = data;
                   },
                   obsecure: true,
                 ),
@@ -94,8 +95,8 @@ class _LoginpgState extends State<Loginpg> {
                   height: 30,
                 ),
                 LoginButton(
-                  hint: 'Log In',
-                  onTap: signInUser,
+                  hint: 'Sign Up',
+                  onTap: _registerUser,
                 ),
                 const SizedBox(
                   height: 10,
@@ -104,7 +105,7 @@ class _LoginpgState extends State<Loginpg> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      'first time ?',
+                      'already have an account?',
                       style: TextStyle(
                         color: kSecondaryColor,
                         fontSize: 18,
@@ -112,10 +113,10 @@ class _LoginpgState extends State<Loginpg> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, Registepg.id);
+                        Navigator.pop(context);
                       },
                       child: const Text(
-                        ' Sign Up',
+                        ' Log In',
                         style: TextStyle(
                           color: kSecondaryColor,
                           fontSize: 20,
@@ -132,7 +133,8 @@ class _LoginpgState extends State<Loginpg> {
     );
   }
 
-  Future<void> signInUser() async {
+  Future<void> _registerUser() async {
+    // if it didn't pass validation
     if (!formKey.currentState!.validate()) {
       setState(() => autoValidateMode = AutovalidateMode.always);
       return;
@@ -142,14 +144,18 @@ class _LoginpgState extends State<Loginpg> {
     setState(() => isLoading = true);
 
     try {
-      await getIt<FirebaseService>().signIn(mail, pass);
+      await getIt<FirebaseService>().register(mail, pass);
 
       if (mounted) {
         setState(() => isLoading = false);
       }
 
-      Navigator.pushNamedAndRemoveUntil(context, Chatpg.id, (route) => false,
-          arguments: mail);
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        Chatpg.id,
+        (route) => false,
+        arguments: mail,
+      );
     } on FirebaseAuthException catch (e) {
       if (mounted) {
         setState(() => isLoading = false);
