@@ -7,7 +7,6 @@ import 'package:chat_app/widgets/text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-
 import '../services/firebase_service.dart';
 
 class Registepg extends StatefulWidget {
@@ -20,7 +19,7 @@ class Registepg extends StatefulWidget {
 }
 
 class _RegistepgState extends State<Registepg> {
-  late String mail, pass;
+  late String mail, pass, name;
 
   bool isLoading = false;
 
@@ -74,6 +73,15 @@ class _RegistepgState extends State<Registepg> {
                       ),
                     ),
                   ],
+                ),
+                InputTextField(
+                  hint: 'Name',
+                  onChanged: (data) {
+                    name = data;
+                  },
+                ),
+                const SizedBox(
+                  height: 14,
                 ),
                 InputTextField(
                   hint: 'E-mail',
@@ -144,7 +152,7 @@ class _RegistepgState extends State<Registepg> {
     setState(() => isLoading = true);
 
     try {
-      await getIt<FirebaseService>().register(mail, pass);
+      await getIt<FirebaseService>().register(mail, pass, name);
 
       if (mounted) {
         setState(() => isLoading = false);

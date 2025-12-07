@@ -17,6 +17,7 @@ class FirebaseService {
       return await _auth.signInWithEmailAndPassword(
         email: email.trim(),
         password: password,
+
       );
     } catch (e) {
       throw FirebaseAuthException(
@@ -26,12 +27,18 @@ class FirebaseService {
     }
   }
 
-  Future<UserCredential> register(String email, String password) async {
+  Future<UserCredential> register(String email, String password, String name) async {
     try {
-      return await _auth.createUserWithEmailAndPassword(
+      
+      UserCredential credential = await _auth.createUserWithEmailAndPassword(
         email: email.trim(),
         password: password,
       );
+
+      await credential.user!.updateDisplayName(name);
+      await credential.user!.reload();
+
+      return credential;
     } catch (e) {
       throw FirebaseAuthException(
         code: 'registration-error',
