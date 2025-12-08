@@ -48,7 +48,7 @@ class _ChatTextFieldState extends State<ChatTextField> {
             onPressed: () {
               String message = controller.text.trim();
               if (message.isNotEmpty) {
-                getIt<FirebaseService>().sendMessage(message, widget.userMail.toString());
+                getIt<FirebaseService>().sendMessage(message, widget.userMail.toString(), getIt<FirebaseService>().currentUser!.displayName!);
                 controller.clear();
 
                 widget.scrollControllerFun();

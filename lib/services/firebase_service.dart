@@ -29,7 +29,7 @@ class FirebaseService {
 
   Future<UserCredential> register(String email, String password, String name) async {
     try {
-      
+
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
         email: email.trim(),
         password: password,
@@ -48,12 +48,13 @@ class FirebaseService {
   }
 
   // -------- Chat -----------------------------
-  Future<void> sendMessage(String text, String userEmail) async {
+  Future<void> sendMessage(String text, String userEmail, String userName) async {
     try {
       await _firestore.collection(kMessagesCollection).add({
         kMessageData: text.trim(),
         kMessageTime: FieldValue.serverTimestamp(), // time message created at
         kMessageId: userEmail.trim(),
+        kUserName: userName.trim(),
       });
     } catch (e) {
       throw Exception('Failed to send message: ${e.toString()}');

@@ -10,6 +10,7 @@ const kMessagesCollection = 'messages';
 const kMessageData = 'data';
 const kMessageTime = 'time';
 const kMessageId = 'id';
+const kUserName = 'username';
 const kChat = 'Chat';
 const kCalculator = 'Calculator';
 const kAspects = 'Aspects';

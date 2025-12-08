@@ -50,6 +50,7 @@ class ChatpgState extends State<Chatpg> {
                     return ChatBubble(
                       messageObject: message,
                       isSender: isSender,
+                      username: message.senderName,
                     );
                   },
                 );
